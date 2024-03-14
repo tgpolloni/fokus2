@@ -4,8 +4,10 @@ const btnAdicionarTarefa = document.querySelector('.app__button--add-task')
 const formAdicionarTarefa = document.querySelector('.app__form-add-task')
 const textArea = document.querySelector('.app__form-textarea')
 const ulTarefas = document.querySelector('.app__section-task-list')
+const paragrafoDescricaoTarefa = document.querySelector('.app__section-active-task-description')
  
 const tarefas = JSON.parse(localStorage.getItem('tarefas')) || []
+let tarefaSelecionada = null
 
 function atualizaTarefas () {
     localStorage.setItem('tarefas', JSON.stringify(tarefas))
@@ -35,9 +37,9 @@ function criarElementoTarefa (tarefa) {
         //debugger
         const novaDescricao = prompt("Qual e o novo nome da tarefa?")
         if (novaDescricao) {
-        paragrafo.textContent = novaDescricao
-        tarefa.descricao = novaDescricao
-        atualizaTarefas()
+            paragrafo.textContent = novaDescricao
+            tarefa.descricao = novaDescricao
+            atualizaTarefas()
         }
     }
 
@@ -49,8 +51,25 @@ function criarElementoTarefa (tarefa) {
     li.append(paragrafo)
     li.append(botao)
 
+    li.onclick = () => {
+        document.querySelectorAll('.app__section-task-list-item-active')
+            .forEach(elemento => {
+                elemento.classList.remove('app__section-task-list-item-active')
+            })
+        if (tarefaSelecionada == tarefa) {
+            paragrafoDescricaoTarefa.textContent = ''
+            tarefaSelecionada = null
+            return
+        }
+        tarefaSelecionada = tarefa
+        paragrafoDescricaoTarefa.textContent = tarefa.descricao
+        
+        li.classList.add('app__section-task-list-item-active')
+    }
+
     return li
 }
+
 
 btnAdicionarTarefa.addEventListener('click', () => {
     formAdicionarTarefa.classList.toggle('hidden')
